@@ -1,0 +1,202 @@
+3.1 REPL 사용하기
+Read Evaluate Print Loop
+읽고 평가하고 출력하는 루프
+
+소스코드를 읽고 평가하고 그 결과를 출력해 주는 명령어 : node.exe
+스크립트 언어에서 실행을 위해 주로 사용됨
+--> 스크립트 언어는 미리 컴파일하지 않고 한줄 한줄 읽고 평가하고 그 결과를 출력
+
+JS의 실행환경 1) 브라우저의 콘솔탭
+2) Node의 콘솔 : REPL - node.exe
+
+실행방법
+1) Ctrl + ` 입력 > node 입력> 엔터
+2) 실행하려는 폴더에서 오른쪽 마우스 버튼> powershell실행
+
+*소스가 보통 길다. --> 파일로 저장 후 실행시키는 것이 일반적
+
+3.2 JS 파일 실행하기
+1) helloWorld.js 파일 생성
+2) node 파일명 node helloWorld[.js] //확장자는 생략가능
+
+3.3 모듈로 만들기
+모듈 : 특정 기능을 하는 함수나 변수들의 집합
+
+실습 3파일 작성
+모듈을 정의할 파일
+    var.js
+모듈을 사용할 파일
+    func.js
+    index.js
+
+모듈로 만들기
+1) 소스코드에서
+module.exports = 변수, 객체, 함수
+
+모듈 사용하기
+    - 다른 파일의 모듈 불러오기 : require(모듈경로)
+
+3.4 노드 내장 객체 알아보기
+ * 내장 객체 : 이미 노드가 정의해 둔 모듈
+ * require없이 사용 가능한 객체
+
+사용해 본 노드의 내장객체
+ console객체, module
+
+window 객체 : BOM객체, 브라우저에서만
+document 객체 : DOM객체, 브라우저에서만
+
+3.4.1 global
+전역객체 --> 파일간의 데이터 공유 ---> 남용하지 말자!!
+
+3.4.2 console : [global.]console
+
+    -console.log()
+    -console.error(), console.trace()
+    -console.time(레이블), console.timeEnd(레이블)
+
+3.4.3 타이머
+- setTimeout(콜백함수, 밀리초) : 밀리초 후에 콜백함수 1회 실행
+- setInterval(콜백함수, 밀리초) : 밀리초 마다 콜백함수 실행
+- setImmediate(콜백함수)
+set + ~~ 함수의 반환값은 타이머아이디
+
+<> 타이머 취소 : clear + ~~함수(아이디)
+clearTimeout(아이디), clearInterval(아이디), clearImmediate(아이디)
+
+setImmediate(콜백) vs setTimeout(콜백, 0)
+--> setTimeout(콜백, 0)을 사용하지 않는 것을 권장 - 실행순서가 헷갈릴 수 있음
+
+3.4.4 __filename, __dirname
+__filename : 실행할 때 현재 실행중인 파일명
+__dirname : 실행할 때 현재 실행중인 폴더명(디렉토리명)
+경로를 포함하여 표시한다.
+
+*경로 구분자
+윈도 : \
+맥, 리눅스 : /
+
+3.4.5 module, exports, require
+* JS에서 함수는 function형 객체
+* 모듈 작성 : module.exports (global.module.exports) // module.exports로 모듈작성권장
+* 모듈 작성 다른 방법 : exports(global.exports)
+
+exports ==> module.exports ==> {}//실제 모듈
+
+*노드에서 this 의미
+- 최상위 스코프(전역스코프)의 this : module.exports, exports
+- 함수 내의 this : global 객체,  JS함수 ---> function형 객체
+
+*require() : 함수 --> function형 객체
+- require.cache
+- require.main
+
+*require() 주의 사항
+-상호 의존관계인 경우 주의가 필요
+(dependency 문제 발생) : circular dependency
+crtl+F2 : 같은 내용 한꺼번에 바꾸기(refactoring)
+
+3.4.6 process
+실행파일(ex.node.exe)이 메인메모리에 로딩되어 실행되고 있는 것
+
+- process.arch : processer architecture information
+- process.version : node의 버전 node -v
+- process.platform : OS플랫폼 정보 (linux, darwin, freebsd)os종류
+- process.pid : process's index
+- process.uptime() : 프로세스 시작 후 경과시간
+- process.cwd() : current working directory 프로세스 실행되는 경로
+- process.cpuUsage() : 프로세스의 cpu사용량
+
+3.4.6.1 process.env
+environment
+process.env에 환경정보를 저장해 두고 그 정보를 실행시 사용
+주로 공개되지 말아야 할 정보를 담아둔다. (DB의 아이디, 패스워드)
+
+
+3.4.6.2 process.nextTick(콜백)
+* 즉시 실행 방법
+1) setTimeout(콜백,0)
+2) setImmediate(콜백)
+3) process.nextTick(콜백)
+4) Promise의 resolve()의 콜백
+3,4 제일 먼저 실행됨 : microtask
+* 주의 사항 : 마이크로태스크내부에서 재귀 호출 금지 
+
+3.4.6.3 process.exit(코드)
+: 프로세스를 종료 시킴
+0 정상 종료
+1 이상 비정상 종료
+
+let i = 1;
+setInterval(
+    () => {
+        if(i ===5){
+            console.log('종료!);
+            process.exit();
+        }
+        console.log(i);
+        i+= 1;
+    },
+    1000
+);
+
+3.5 노드 내장 모듈 사용하기
+
+3.5.1 OS
+- operating system
+  운영 체제
+- 운영체제의 정보를 다루는 내장 모듈 )require필요함
+
+3.5.2 path 2.5별점
+폴더와 파일의 경로를 위한 모듈
+--> OS별로 경로 구분자가 다름
+
+* 경로 구분자 (path delimeter)
+- 윈도 \
+    C:\Users\ZeroCho
+- POSIX : / (맥, 리눅스 등 포함 유닉스계열)
+    C://Users/ZeroCho
+    노드에서 별다른 이야기가 없으면 /로 구분
+
+3.5.3 url 4점 별점
+인터넷 주소 관련 모듈
+
+인터넷 주소를 처리하는 방식
+1)WHATWG(웹의 표준 제정하는 단체)방식
+2)노드에서 전통적으로 사용해 온 방식
+
+https ://  [user   :pass  @]sub.host.com        :8080       /p/a/t/h ?  query=string   #hash
+프로토콜   사용자명  비번     서버 도메인 주소     포트번호     경로         요청쿼리       해시코드
+
+요청쿼리 : 키 = 값
+
+해시코드 : a태그의 레이블
+
+ftp://아이디:패스워드@주소
+
+* searchParams 이용법
+p121~122
+
+3.5.4 querystring
+ - 기존 노드 방식 사용시 사용
+*.parse() : 문자열을 객체로 변환
+ .format() : 객체를 문자열로 변환
+ .stringify() : 객체를 문자열로 변환
+
+JSON.parse() <> JSON.stringify()
+
+3.5.5 crypto 몰라도댐
+ 암호화를 도와주는 모듈
+ 주요정보는 암호화할 필요가 있다
+
+ 3.5.5.1 단방향 암호화
+ -비번에 주로 사용
+ -복호화가 불가능한 암호화 방식
+
+ 해시 기법 : 어떤 문자열을 고정된 길이의 다른 문자열로 바꾸는 방식
+ - 암호화하는 다양한 알고리즘이 존재
+
+ --> 현재의 암호화방식에 소금(salt)을 추가하는 방식을 통해 암호화를 강력하게 만듬.
+ 3.5.5.2 양방향 암호화
+ - 양방향 대칭형 암호화
+ --> 암호문 <-> 복호화문

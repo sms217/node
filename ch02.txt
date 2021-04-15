@@ -1,0 +1,78 @@
+2.1.1 const, let
+* var : 변수 선언(이전 버전)
+--> const, let을 대체로 씀
+
+*var의 단점 : hoisting
+--> 변수의 선언이 아무 곳에서나 이뤄져서 소스코드 이해도가 떨어짐
+    가독성이 안좋음
+    함수 스코프이다
+    
+*const, let : 블록 스코프이다 변수의 범위가 {}안으로 한정됨.
+
+2.1.6 Class: 클래스 문법 ES6에서 도입
+    - 자바스크립트는 학술적으로는 객체지향언어가 아님.
+    - 객체중심언어, 프로토타입기반언어(Prototype based language)
+      Classless Language, Instance based Language
+    - 프로토타입 : 원형 - 객체를 사용하는데, 객체의 원형만 가지고 있고 실행 도중에 속성, 메소드를 추가 또는 삭제
+    - 상속, 다형성 구현이 가능하나 매우 어려움
+
+    *프로토타입 상속 예제 코드
+    var Human = function(type){//function - Function 객체
+        this.type = type||'human';
+    }; //this를 사용함으로써 Human을 클래스명이자 생성자역할로 만듬
+    Human.isHuman = function(human){
+        return human instanceof Human; // instanceof연산자
+    }; // h.isHuman(man); 클래스메서드
+
+    Human.prototype.breathe = function(){
+        alert('h-a-a-m');
+    }; //일반메서드 구현
+
+    var Zero = function(type, firstName, lastName){
+        Human.apply(this, arguments);// 자바의 super()역할
+        this.firstName = firstName;
+        this.lastName = lastName;
+
+    }; //Zero 객체가 Human객체를 상속받음
+
+    Zero.prototype = Object.create(Human.prototype); //Human 객체의 원형복제
+    Zero.prototype.constructor = Zero; //비로소 상속완성
+    Zero.prototype.sayName = function(){
+        //alert(this.firstName + ' ' + this.lastName);
+        alert(`${this.firstName} : ${this.lastName}`);
+    };//자식객체의 메소드 구현
+
+    var oldZero = new Zero('human', 'JaRyong', 'Cho');
+    Human.isHuman(oldZero);
+
+    2.1.7 프로미스 : Promise (비동기처리)
+    - 프로미스 이전의 비동기 : 콜백처리
+    ES6부터는 프로미스 사용 권장
+    - 반드시 알아야 할 객체
+    - 비동기 처리에서 성공, 실패의 경우를 나눠서 구현
+    - 프로미스 사용 이유 또는 문법 개발 배경 > 콜백지옥(CallBack Hell)현상을 극복하기 위해
+
+    -프로미스 사용 규칙
+    1) 프로미스 객체 생성
+       객체 생성시의 매개변수 : resolve(), reject()를 매개변수로 가진 콜백함수(화살표함수) : IO등 비동기처리할 코드작성
+    2) 생성된 객체에 then(), catch(), finally() 메소드를 호출
+       세개의 메소드의 매개변수 : 콜백함수로 구현
+       resolve()호출 --> then()실행
+       reject()호출 --> catch()실행
+       호출하건 호출안하건 finally()실행
+
+    2.2.2 FormData
+        form태그와 관련, 동적으로 관리가 가능하다
+    
+    2.2.3 encodeURIComponent, decodeURIComponent
+    - url 주소에서 한글을 처리하기 위한 메소드
+    -BOM 중의 window객체의 메소드
+        window 객체는 BOM객체의 최상위 객체
+        alert(), confirm(), open(), close() -> 다 window.을 생략해도됨.
+    2.2.4 데이터 속성과 dataset
+    HTML5에서 태그에 사용자 정의 속성을 사용할 수 있음.
+    data-+사용자정의 속성명
+    data-id
+    data-user-job
+    --> dataset을 사용할 때 키값음 data-를 떼어낸 단어를 사용
+    data-다음에 합성어(user-job) ==> userJob
